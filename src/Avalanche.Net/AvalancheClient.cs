@@ -8,9 +8,9 @@ namespace Avalanche.Net
         private readonly string ipAddress;
         private readonly string port;
 
-        public Admin Admin { get; set; }
-        public Keystore Keystore { get; set; }
-        public Avm Avm { get; set; }
+        public Admin Admin { get; private set; }
+        public Keystore Keystore { get; private set; }
+        public Avm Avm { get; private set; }
 
         public AvalancheClient(string protocol, string ipAddress, string port)
         {
