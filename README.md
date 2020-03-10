@@ -1,2 +1,3 @@
 # Avalanche.Net
-Avalanche Blockchain API C# Client
+
+.Net Core client for Avalanche Blockchain API
