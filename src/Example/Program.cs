@@ -10,19 +10,18 @@ namespace Example
             var ava = new Avalanche.Net.AvalancheClient("http", "127.0.0.1", "9650");
 
             // List Peers for node
-            var peers = await ava.Admin.Peers();
+            var peers = await ava.Admin.PeersAsync();
             foreach (var peer in peers.Result["peers"])
                 Console.WriteLine(peer);
 
             // Random username
             var username = Guid.NewGuid().ToString();
-            await ava.Keystore.CreateUser(username, "p4ssw0rd?");
+            await ava.Keystore.CreateUserAsync(username, "p4ssw0rd?");
 
             // List users
-            var users = await ava.Keystore.ListUsers();
+            var users = await ava.Keystore.ListUsersAsync();
             foreach (var user in users.Result["users"])
                 Console.WriteLine(user);
-
         }
     }
 }

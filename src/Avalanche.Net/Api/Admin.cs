@@ -11,17 +11,17 @@ namespace Avalanche.Net.Api
 
         }
 
-        public async Task<ApiResponse<string[]>> Peers()
+        public async Task<ApiResponse<string[]>> PeersAsync()
         {
             return await SendAsync<string[]>(new ApiRequest("admin.peers", null));
         }
 
-        public async Task<ApiResponse<string>> GetNetworkId()
+        public async Task<ApiResponse<string>> GetNetworkIdAsync()
         {
             return await SendAsync<string>(new ApiRequest("admin.getNetworkID", null));
         }
 
-        public async Task<ApiResponse<string>> Alias(string alias, string endpoint)
+        public async Task<ApiResponse<string>> AliasAsync(string alias, string endpoint)
         {
             var parameters = new Dictionary<string, string>{
                 {"alias", alias},
@@ -31,7 +31,7 @@ namespace Avalanche.Net.Api
             return await SendAsync<string>(new ApiRequest("admin.alias", parameters));
         }
 
-        public async Task<ApiResponse<string>> AliasChain(string chain, string alias)
+        public async Task<ApiResponse<string>> AliasChainAsync(string chain, string alias)
         {
             var parameters = new Dictionary<string, string>{
                 {"chain", chain},
@@ -41,7 +41,7 @@ namespace Avalanche.Net.Api
             return await SendAsync<string>(new ApiRequest("admin.aliasChain", parameters));
         }
 
-        public async Task<ApiResponse<string>> GetBlockchainId(string alias)
+        public async Task<ApiResponse<string>> GetBlockchainIdAsync(string alias)
         {
             var parameters = new Dictionary<string, string>{
                 {"alias", alias}
@@ -50,7 +50,7 @@ namespace Avalanche.Net.Api
             return await SendAsync<string>(new ApiRequest("admin.getBlockchainID", parameters));
         }
 
-        public async Task<ApiResponse<string>> StartCpuProfiler(string filename)
+        public async Task<ApiResponse<string>> StartCpuProfilerAsync(string filename)
         {
             var parameters = new Dictionary<string, string>{
                 {"fileName", filename}
@@ -59,12 +59,12 @@ namespace Avalanche.Net.Api
             return await SendAsync<string>(new ApiRequest("admin.startCPUProfiler", parameters));
         }
 
-        public async Task<ApiResponse<string>> StopCpuProfiler()
+        public async Task<ApiResponse<string>> StopCpuProfilerAsync()
         {
             return await SendAsync<string>(new ApiRequest("admin.stopCPUProfiler", null));
         }
 
-        public async Task<ApiResponse<string>> MemoryProfile(string filename)
+        public async Task<ApiResponse<string>> MemoryProfileAsync(string filename)
         {
             var parameters = new Dictionary<string, string>{
                 {"fileName", filename}
@@ -73,7 +73,7 @@ namespace Avalanche.Net.Api
             return await SendAsync<string>(new ApiRequest("admin.memoryProfile", parameters));
         }
 
-        public async Task<ApiResponse<string>> LockProfile(string filename)
+        public async Task<ApiResponse<string>> LockProfileAsync(string filename)
         {
             var parameters = new Dictionary<string, string>{
                 {"fileName", filename}

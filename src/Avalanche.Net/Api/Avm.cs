@@ -11,7 +11,7 @@ namespace Avalanche.Net.Api
 
         }
 
-        public async Task<ApiResponse<string>> CreateAddress(string username, string password)
+        public async Task<ApiResponse<string>> CreateAddressAsync(string username, string password)
         {
             var parameters = new Dictionary<string, string>{
                     {"username", username},
@@ -21,7 +21,7 @@ namespace Avalanche.Net.Api
             return await SendAsync<string>(new ApiRequest("avm.createAddress", parameters));
         }
 
-        public async Task<ApiResponse<string>> GetBalance(string address, string assetId)
+        public async Task<ApiResponse<string>> GetBalanceAsync(string address, string assetId)
         {
             var parameters = new Dictionary<string, string>{
                     {"address", address},
@@ -31,7 +31,7 @@ namespace Avalanche.Net.Api
             return await SendAsync<string>(new ApiRequest("avm.getBalance", parameters));
         }
 
-        public async Task<ApiResponse<string>> ExportKey(string username, string password, string address)
+        public async Task<ApiResponse<string>> ExportKeyAsync(string username, string password, string address)
         {
             var parameters = new Dictionary<string, string>{
                     {"username", username},
