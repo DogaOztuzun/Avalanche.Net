@@ -6,7 +6,7 @@ namespace Avalanche.Net.Models
 {
     public class ApiRequest
     {
-        public ApiRequest(string method, Dictionary<string, string> param)
+        public ApiRequest(string method, Dictionary<string, dynamic> param)
         {
             Method = method;
             Params = param;
@@ -22,7 +22,7 @@ namespace Avalanche.Net.Models
         public string Method { get; set; }
 
         [JsonProperty(PropertyName = "params", Order = 3)]
-        public Dictionary<string, string> Params { get; set; }
+        public Dictionary<string, dynamic> Params { get; set; }
 
         public string GetString()
         {

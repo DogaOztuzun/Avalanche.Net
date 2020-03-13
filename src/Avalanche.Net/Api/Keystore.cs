@@ -13,7 +13,7 @@ namespace Avalanche.Net.Api
 
         public async Task<ApiResponse<string>> CreateUserAsync(string username, string password)
         {
-            var parameters = new Dictionary<string, string>{
+            var parameters = new Dictionary<string, dynamic>{
                     {"username", username},
                     {"password", password}
                 };
@@ -28,16 +28,17 @@ namespace Avalanche.Net.Api
 
         public async Task<ApiResponse<string>> ExportUserAsync(string username, string password)
         {
-            var parameters = new Dictionary<string, string>{
+            var parameters = new Dictionary<string, dynamic>{
                     {"username", username},
                     {"password", password}
                 };
 
             return await SendAsync<string>(new ApiRequest("keystore.exportUser", parameters));
         }
+
         public async Task<ApiResponse<string>> ImportUserAsync(string username, string password, string user)
         {
-            var parameters = new Dictionary<string, string>{
+            var parameters = new Dictionary<string, dynamic>{
                     {"username", username},
                     {"password", password},
                     {"user", user}

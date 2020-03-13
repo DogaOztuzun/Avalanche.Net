@@ -23,7 +23,7 @@ namespace Avalanche.Net.Api
 
         public async Task<ApiResponse<string>> AliasAsync(string alias, string endpoint)
         {
-            var parameters = new Dictionary<string, string>{
+            var parameters = new Dictionary<string, dynamic>{
                 {"alias", alias},
                 {"endpoint", endpoint}
             };
@@ -33,7 +33,7 @@ namespace Avalanche.Net.Api
 
         public async Task<ApiResponse<string>> AliasChainAsync(string chain, string alias)
         {
-            var parameters = new Dictionary<string, string>{
+            var parameters = new Dictionary<string, dynamic>{
                 {"chain", chain},
                 {"alias", alias}
             };
@@ -43,7 +43,7 @@ namespace Avalanche.Net.Api
 
         public async Task<ApiResponse<string>> GetBlockchainIdAsync(string alias)
         {
-            var parameters = new Dictionary<string, string>{
+            var parameters = new Dictionary<string, dynamic>{
                 {"alias", alias}
             };
 
@@ -52,7 +52,7 @@ namespace Avalanche.Net.Api
 
         public async Task<ApiResponse<string>> StartCpuProfilerAsync(string filename)
         {
-            var parameters = new Dictionary<string, string>{
+            var parameters = new Dictionary<string, dynamic>{
                 {"fileName", filename}
             };
 
@@ -66,7 +66,7 @@ namespace Avalanche.Net.Api
 
         public async Task<ApiResponse<string>> MemoryProfileAsync(string filename)
         {
-            var parameters = new Dictionary<string, string>{
+            var parameters = new Dictionary<string, dynamic>{
                 {"fileName", filename}
             };
 
@@ -75,7 +75,7 @@ namespace Avalanche.Net.Api
 
         public async Task<ApiResponse<string>> LockProfileAsync(string filename)
         {
-            var parameters = new Dictionary<string, string>{
+            var parameters = new Dictionary<string, dynamic>{
                 {"fileName", filename}
             };
 
