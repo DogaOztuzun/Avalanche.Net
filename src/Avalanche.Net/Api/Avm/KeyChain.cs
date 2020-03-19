@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using NBitcoin;
+using NBitcoin.Crypto;
 using NBitcoin.DataEncoders;
 
 namespace Avalanche.Net.Api.AVMAPI
@@ -25,7 +26,7 @@ namespace Avalanche.Net.Api.AVMAPI
             } 
             private set {
                 _publicKey = value;
-                this.Pubk = this.PrivateKey.ToBytes();
+                this.Pubk = this.PublicKey.ToBytes();
             }
         }
 
@@ -81,6 +82,28 @@ namespace Avalanche.Net.Api.AVMAPI
             }
 
             throw new NotSupportedException();
+        }
+        
+        public byte[] Sign(byte[] msg) 
+        {
+            ECDSASignature signature = PrivateKey.Sign(new uint256(msg), useLowR: false);
+            byte[] r = signature.R.ToByteArrayUnsigned();
+            byte[] s = signature.S.ToByteArrayUnsigned();
+
+            // TODO: Add recoveryParam
+
+            return To64ByteArray(r,s);
+        }
+
+        private byte[] To64ByteArray(byte[] r, byte[] s)
+        {
+            var rsigPad = new byte[32];
+            Array.Copy(r, 0, rsigPad, rsigPad.Length - r.Length, r.Length);
+
+            var ssigPad = new byte[32];
+            Array.Copy(s, 0, ssigPad, ssigPad.Length - s.Length, s.Length);
+
+            return ByteUtil.Merge(rsigPad, ssigPad);
         }
 
         # region utils/bintools
