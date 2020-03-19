@@ -1,14 +1,23 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Avalanche.Net.Models
 {
-    public class ApiResponseBag<T> : ApiResponseBase<Dictionary<string, T>>
+    public class ApiResponse<T>
     {
 
-    }
+        [JsonProperty(PropertyName = "jsonrpc", Order = 0)]
+        public string JsonRpc { get; set; } = "2.0";
 
-    public class ApiResponse<T> : ApiResponseBase<T>
-    {
+        [JsonProperty(PropertyName = "id", Order = 1)]
+        public int Id { get; set; } = 1;
 
+        [JsonProperty(PropertyName = "error", Order = 3)]
+        public Dictionary<string, string> Error { get; set; }
+
+        [JsonProperty(PropertyName = "result", Order = 3)]
+        public T Result { get; set; }
+
+        public bool IsSuccessful { get { return Error == null; } }
     }
 }
