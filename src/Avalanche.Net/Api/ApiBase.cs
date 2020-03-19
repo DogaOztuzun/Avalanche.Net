@@ -16,14 +16,14 @@ namespace Avalanche.Net.Api
             apiUrl = $"{protocol}://{ipAddress}:{port}/{path}";
         }
 
-        protected async Task<ApiResponse<T>> SendAsync<T>(ApiRequest request)
+        protected async Task<T> SendAsync<T>(ApiRequest request)
         {
             var data = new StringContent(request.GetString(), Encoding.UTF8, "application/json");
             var response = await _client.PostAsync(apiUrl, data);
 
             var responseData = await response.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<ApiResponse<T>>(responseData);
+            return JsonConvert.DeserializeObject<T>(responseData);
         }
     }
 }
