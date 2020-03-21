@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text;
 using Avalanche.Net.Api.AVMAPI;
+using NBitcoin;
 using NBitcoin.DataEncoders;
 using NUnit.Framework;
 
@@ -28,6 +29,28 @@ namespace Tests
 
             Assert.AreEqual(pubKey,  kp.Pubk.BytesToHex());
             Assert.AreEqual(address, addressStr);
+        }
+
+        [Test]
+        public void ShouldGenerateKeysWithMnemonic()
+        {
+            var mnemonic = new Mnemonic("clever glove portion swing nerve bullet boil rose motion nose rocket tube color account enhance");
+            var kp = new AVMKeyPair(alias, mnemonic);
+            var addressStr = kp.GetAddressString();
+
+            Assert.AreEqual("0343087424849a4d3ca79a0eb89e14e00ff8a8c042e4f5f891f3d57c88737bac67",  kp.Pubk.BytesToHex());
+            Assert.AreEqual("X-nY4u9cpHEnvf5P2kWbbedvgr6ik2qNwL", addressStr);
+        }
+
+        [Test]
+        public void ShouldGenerateKeysWithMnemonicAndPassword()
+        {
+            var mnemonic = new Mnemonic("clever glove portion swing nerve bullet boil rose motion nose rocket tube color account enhance");
+            var kp = new AVMKeyPair(alias, mnemonic, "P@aaw0rd");
+            var addressStr = kp.GetAddressString();
+
+            Assert.AreEqual("020ea542208ffa2bef2213bb1b3460e95d0134056bb211317c323a1d102cf856b5",  kp.Pubk.BytesToHex());
+            Assert.AreEqual("X-4zeczd8zETfCTqTw8aonkBbQitQjp82CQ", addressStr);
         }
 
         [Test]
@@ -58,34 +81,6 @@ namespace Tests
             var hashed = NBitcoin.Crypto.Hashes.SHA256("09090909".HexToBytes());
             var signed = kp.Sign(hashed); 
             Assert.IsTrue(kp.Verify(hashed, signed));
-        }
-
-        public void ShouldVerify() 
-        {
-
-        }
-    }
-
-    public static class StringExtensions
-    {
-        public static byte[] HexToBytes(this string hex)
-        {
-            return Enumerable.Range(0, hex.Length)
-                             .Where(x => x % 2 == 0)
-                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
-                             .ToArray();
-        }
-
-        public static string BytesToHex(this byte[] bytes)
-        {
-            StringBuilder hex = new StringBuilder(bytes.Length * 2);
-
-            foreach (byte b in bytes)
-            {
-                hex.AppendFormat("{0:x2}", b);
-            }
-
-            return hex.ToString();
         }
     }
 }
