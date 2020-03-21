@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Avalanche.Net.Models
@@ -16,7 +16,7 @@ namespace Avalanche.Net.Models
         public Dictionary<string, string> Error { get; set; }
 
         [JsonProperty(PropertyName = "result", Order = 3)]
-        public Dictionary<string, T> Result { get; set; }
+        public T Result { get; set; }
 
         public bool IsSuccessful { get { return Error == null; } }
     }

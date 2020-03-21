@@ -11,32 +11,32 @@ namespace Avalanche.Net.Api
 
         }
 
-        public async Task<ApiResponse<string>> CreateUserAsync(string username, string password)
+        public async Task<ApiResponseBag<string>> CreateUserAsync(string username, string password)
         {
             var parameters = new Dictionary<string, dynamic>{
                     {"username", username},
                     {"password", password}
                 };
 
-            return await SendAsync<string>(new ApiRequest("keystore.createUser", parameters));
+            return await SendAsync<ApiResponseBag<string>>(new ApiRequest("keystore.createUser", parameters));
         }
 
-        public async Task<ApiResponse<string[]>> ListUsersAsync()
+        public async Task<ApiResponse<UserListResponse>> ListUsersAsync()
         {
-            return await SendAsync<string[]>(new ApiRequest("keystore.listUsers", null));
+            return await SendAsync<ApiResponse<UserListResponse>>(new ApiRequest("keystore.listUsers", null));
         }
 
-        public async Task<ApiResponse<string>> ExportUserAsync(string username, string password)
+        public async Task<ApiResponse<ExportUserResponse>> ExportUserAsync(string username, string password)
         {
             var parameters = new Dictionary<string, dynamic>{
                     {"username", username},
                     {"password", password}
                 };
 
-            return await SendAsync<string>(new ApiRequest("keystore.exportUser", parameters));
+            return await SendAsync<ApiResponse<ExportUserResponse>>(new ApiRequest("keystore.exportUser", parameters));
         }
 
-        public async Task<ApiResponse<string>> ImportUserAsync(string username, string password, string user)
+        public async Task<ApiResponseBag<string>> ImportUserAsync(string username, string password, string user)
         {
             var parameters = new Dictionary<string, dynamic>{
                     {"username", username},
@@ -44,7 +44,7 @@ namespace Avalanche.Net.Api
                     {"user", user}
                 };
 
-            return await SendAsync<string>(new ApiRequest("keystore.importUser", parameters));
+            return await SendAsync<ApiResponseBag<string>>(new ApiRequest("keystore.importUser", parameters));
         }
     }
 }
