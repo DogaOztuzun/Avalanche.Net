@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Text;
 using NBitcoin;
+using NBitcoin.BouncyCastle.Math;
 using NBitcoin.Crypto;
 using NBitcoin.DataEncoders;
 
@@ -85,7 +87,7 @@ namespace Avalanche.Net.Api.AVMAPI
         }
         
         public byte[] Sign(byte[] msg) 
-        {
+        { 
             ECDSASignature signature = PrivateKey.Sign(new uint256(msg), useLowR: false);
             byte[] r = signature.R.ToByteArrayUnsigned();
             byte[] s = signature.S.ToByteArrayUnsigned();
@@ -98,12 +100,29 @@ namespace Avalanche.Net.Api.AVMAPI
         private byte[] To64ByteArray(byte[] r, byte[] s)
         {
             var rsigPad = new byte[32];
-            Array.Copy(r, 0, rsigPad, rsigPad.Length - r.Length, r.Length);
-
             var ssigPad = new byte[32];
+
+            Array.Copy(r, 0, rsigPad, rsigPad.Length - r.Length, r.Length);
             Array.Copy(s, 0, ssigPad, ssigPad.Length - s.Length, s.Length);
 
             return ByteUtil.Merge(rsigPad, ssigPad);
+        }
+        
+        public bool Verify(byte[] msg, byte[] sig) 
+        {
+            var signature = sigFromSigBuffer(sig);
+            return PublicKey.Verify(new uint256(msg), signature);
+        }
+
+        private ECDSASignature sigFromSigBuffer(byte[] sig)
+        {
+            var rsigPad = new byte[32];
+            var ssigPad = new byte[32];
+
+            Array.Copy(sig, 0, rsigPad, 0, 32);
+            Array.Copy(sig, 32, ssigPad, 0, 32);
+
+            return new ECDSASignature(new BigInteger(1, rsigPad), new BigInteger(1, ssigPad) );
         }
 
         # region utils/bintools
@@ -123,5 +142,28 @@ namespace Avalanche.Net.Api.AVMAPI
             return buff.Concat(hashslice).ToArray();
         }
         # endregion
+    }
+
+    public static class StringExtensions
+    {
+        public static byte[] HexToBytes(this string hex)
+        {
+            return Enumerable.Range(0, hex.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                             .ToArray();
+        }
+
+        public static string BytesToHex(this byte[] bytes)
+        {
+            StringBuilder hex = new StringBuilder(bytes.Length * 2);
+
+            foreach (byte b in bytes)
+            {
+                hex.AppendFormat("{0:x2}", b);
+            }
+
+            return hex.ToString();
+        }
     }
 }
