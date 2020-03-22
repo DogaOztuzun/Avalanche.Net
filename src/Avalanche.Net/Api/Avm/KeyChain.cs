@@ -88,24 +88,40 @@ namespace Avalanche.Net.Api.AVMAPI
         
         public byte[] Sign(byte[] msg) 
         { 
-            ECDSASignature signature = PrivateKey.Sign(new uint256(msg), useLowR: false);
-            byte[] r = signature.R.ToByteArrayUnsigned();
-            byte[] s = signature.S.ToByteArrayUnsigned();
+            // Returns signature as v + r + s
+            var signature = PrivateKey.SignCompact(new uint256(msg));
 
-            // TODO: Add recoveryParam
-
-            return To64ByteArray(r,s);
-        }
-
-        private byte[] To64ByteArray(byte[] r, byte[] s)
-        {
+            // NBitcoin adds 27 to recovery parameter
+            var recId = signature[0];            
+            int headerByte = recId - 27 - (this.PrivateKey.IsCompressed ? 4 : 0);
+            
+            // Convert from v + r + s -> r + s + v
+            var vsigPad = new byte[] { (byte) headerByte};
             var rsigPad = new byte[32];
             var ssigPad = new byte[32];
 
+            Array.Copy(signature, 1, rsigPad, 0, 32);
+            Array.Copy(signature, 33, ssigPad, 0, 32);
+
+            Console.WriteLine("");
+            Console.WriteLine($"hash: {msg.BytesToHex()}");
+            Console.WriteLine($"r: {rsigPad.BytesToHex()}");
+            Console.WriteLine($"s: {ssigPad.BytesToHex()}");
+
+            return To64ByteArray(rsigPad,ssigPad, vsigPad);
+        }
+
+        private byte[] To64ByteArray(byte[] r, byte[] s, byte[] v)
+        {
+            var rsigPad = new byte[32];
+            var ssigPad = new byte[32];
+            var vsigPad = new byte[1];
+
             Array.Copy(r, 0, rsigPad, rsigPad.Length - r.Length, r.Length);
             Array.Copy(s, 0, ssigPad, ssigPad.Length - s.Length, s.Length);
+            Array.Copy(v, 0, vsigPad, vsigPad.Length - v.Length, v.Length);
 
-            return ByteUtil.Merge(rsigPad, ssigPad);
+            return ByteUtil.Merge(rsigPad, ssigPad, vsigPad);
         }
         
         public bool Verify(byte[] msg, byte[] sig) 
@@ -116,12 +132,14 @@ namespace Avalanche.Net.Api.AVMAPI
 
         private ECDSASignature sigFromSigBuffer(byte[] sig)
         {
+            // TODO: Get v from signature
             var rsigPad = new byte[32];
             var ssigPad = new byte[32];
 
             Array.Copy(sig, 0, rsigPad, 0, 32);
             Array.Copy(sig, 32, ssigPad, 0, 32);
 
+            // Create and return custom Signature model which includes v
             return new ECDSASignature(new BigInteger(1, rsigPad), new BigInteger(1, ssigPad) );
         }
 
