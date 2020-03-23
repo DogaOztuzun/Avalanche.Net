@@ -65,12 +65,12 @@ namespace Tests
         [TestCase(
             "ef9bf2d4436491c153967c9709dd8e82795bdb9b5ad44ee22c2903005d1cf676",
             "03f5fccca73bf0ea0ad643133c593ed3a2a69bf9d95a0c218269c0f4a07b91fc53e29ad72a3e279c8966cccfe7ae988a94d93b23d5c5516676ac57ddab319abb01")]
-        // [TestCase(
-        //     "17c692d4a99d12f629d9f0ff92ec0dba15c9a83e85487b085c1a3018286995c6",
-        //     "8ecd7d9b2613c8eabedb00333d0ae187c39a521e9631cbccf16cd14991fe5b221c9983d23583d397f3e7e377a6825c1caa5ff8b43c5863342441c48c2173119b01")]
-        // [TestCase(
-        //     "d0e17d4b31380f96a42b3e9ffc4c1b2a93589a1e51d86d7edc107f602fbc7475",
-        //     "be9fb13be75791778ea1081820f9d25d808d0714a92880a7144a0f9809961b43079576349b255399f5339550db7f5fec4b989e3364a5ffb0aca09e5ad72e92af00")]
+        [TestCase(
+            "17c692d4a99d12f629d9f0ff92ec0dba15c9a83e85487b085c1a3018286995c6",
+            "8ecd7d9b2613c8eabedb00333d0ae187c39a521e9631cbccf16cd14991fe5b221c9983d23583d397f3e7e377a6825c1caa5ff8b43c5863342441c48c2173119b01")]
+        [TestCase(
+            "d0e17d4b31380f96a42b3e9ffc4c1b2a93589a1e51d86d7edc107f602fbc7475",
+            "be9fb13be75791778ea1081820f9d25d808d0714a92880a7144a0f9809961b43079576349b255399f5339550db7f5fec4b989e3364a5ffb0aca09e5ad72e92af00")]
         public void ShouldSign(string privateKey, string signature)
         {
             var kp = new AVMKeyPair(alias,  privateKey.HexToBytes());

@@ -89,7 +89,7 @@ namespace Avalanche.Net.Api.AVMAPI
         public byte[] Sign(byte[] msg) 
         { 
             // Returns signature as v + r + s
-            var signature = PrivateKey.SignCompact(new uint256(msg));
+            var signature = PrivateKey.SignCompact(new uint256(msg), forceLowR: false);
 
             // NBitcoin adds 27 to recovery parameter
             var recId = signature[0];            
@@ -102,11 +102,6 @@ namespace Avalanche.Net.Api.AVMAPI
 
             Array.Copy(signature, 1, rsigPad, 0, 32);
             Array.Copy(signature, 33, ssigPad, 0, 32);
-
-            Console.WriteLine("");
-            Console.WriteLine($"hash: {msg.BytesToHex()}");
-            Console.WriteLine($"r: {rsigPad.BytesToHex()}");
-            Console.WriteLine($"s: {ssigPad.BytesToHex()}");
 
             return To64ByteArray(rsigPad,ssigPad, vsigPad);
         }
