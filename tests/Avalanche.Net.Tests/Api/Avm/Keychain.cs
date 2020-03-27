@@ -40,6 +40,22 @@ namespace Tests
         }
 
         [Test]
+        [TestCase(
+            "ef9bf2d4436491c153967c9709dd8e82795bdb9b5ad44ee22c2903005d1cf676",
+            "X-GsBFiZotn2DvHgeV4AN6htsh2k62NAb28", 
+            "ava14crnapsnw2rpx8d430yrnnw70ctkup6gfm6esr")]
+        public void ShouldGenerateBech32Address(string privateKey, string address, string bech32Address)
+        {
+            var kp = new AVMKeyPair(alias,  privateKey.HexToBytes());
+            
+            var encoded = kp.GetBech32Address();
+            Assert.AreEqual(bech32Address, encoded);
+
+            var decoded = kp.DecodeBech32Address(encoded);
+            Assert.AreEqual(address, decoded);
+        }
+
+        [Test]
         public void ShouldGenerateKeysWithMnemonic()
         {
             var mnemonic = new Mnemonic("clever glove portion swing nerve bullet boil rose motion nose rocket tube color account enhance");

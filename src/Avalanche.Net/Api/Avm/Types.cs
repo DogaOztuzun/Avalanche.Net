@@ -7,12 +7,12 @@ namespace Avalanche.Net.Api.AVMAPI
 
         protected string _chainId { get; set;}
         
-        protected string GetChainID() 
+        public string GetChainID() 
         {
             return this._chainId;
         }
 
-        protected void SetChainID(string chainid)
+        public void SetChainID(string chainid)
         {
             this._chainId = chainid;
         }
