@@ -8,18 +8,18 @@ namespace Avalanche.Net.Api
 {
     public class ApiBase
     {
-        private HttpClient _client = new HttpClient();
-        private string apiUrl;
+        private readonly HttpClient _client = new HttpClient();
+        private readonly string _apiUrl;
 
         protected ApiBase(string protocol, string ipAddress, string port, string path)
         {
-            apiUrl = $"{protocol}://{ipAddress}:{port}/{path}";
+            _apiUrl = $"{protocol}://{ipAddress}:{port}/{path}";
         }
 
         protected async Task<T> SendAsync<T>(ApiRequest request)
         {
             var data = new StringContent(request.GetString(), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync(apiUrl, data);
+            var response = await _client.PostAsync(_apiUrl, data);
 
             var responseData = await response.Content.ReadAsStringAsync();
 

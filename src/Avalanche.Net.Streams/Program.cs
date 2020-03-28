@@ -1,10 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalanche.Net.Models.Avm;
-using Avalanche.Net.Utilities;
 using nng;
 
 namespace Avalanche.Net.Streams
@@ -13,7 +10,7 @@ namespace Avalanche.Net.Streams
     {
         static async Task Main(string[] args)
         {
-            var url = "ipc:///tmp/i8KtK2KwLi1o7WaVBbEKpRLPtAEYayfoptqAFYxfQgrus1g6m.ipc";
+            const string url = "ipc:///tmp/i8KtK2KwLi1o7WaVBbEKpRLPtAEYayfoptqAFYxfQgrus1g6m.ipc";
             var path = Path.GetDirectoryName(typeof(Program).Assembly.Location);
             var ctx = new NngLoadContext(path);
             var factory = NngLoadContext.Init(ctx);

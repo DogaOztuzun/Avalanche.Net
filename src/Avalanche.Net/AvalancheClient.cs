@@ -4,19 +4,19 @@ namespace Avalanche.Net
 {
     public class AvalancheClient
     {
-        private readonly string protocol;
-        private readonly string ipAddress;
-        private readonly string port;
+        private readonly string _protocol;
+        private readonly string _ipAddress;
+        private readonly string _port;
 
-        public Admin Admin { get; private set; }
-        public Keystore Keystore { get; private set; }
-        public Avm Avm { get; private set; }
+        public Admin Admin { get; }
+        public Keystore Keystore { get; }
+        public Avm Avm { get; }
 
         public AvalancheClient(string protocol, string ipAddress, string port)
         {
-            this.protocol = protocol;
-            this.ipAddress = ipAddress;
-            this.port = port;
+            _protocol = protocol;
+            _ipAddress = ipAddress;
+            _port = port;
 
             Admin = new Admin(protocol, ipAddress, port);
             Keystore = new Keystore(protocol, ipAddress, port);
