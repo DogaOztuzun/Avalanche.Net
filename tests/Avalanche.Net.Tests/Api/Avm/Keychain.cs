@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
 using System.Text;
-using Avalanche.Net.Api.AVMAPI;
+using Avalanche.Net.Api;
+using Avalanche.Net.Utilities;
 using NBitcoin;
 using NBitcoin.DataEncoders;
 using NUnit.Framework;
@@ -32,7 +33,7 @@ namespace Tests
             "X-G8Ef9imcMXTgM7xhn7XT1V417uSGJ5nEj")]
         public void ShouldGenerateKeys(string privateKey, string pubKey, string address)
         {
-            var kp = new AVMKeyPair(alias,  privateKey.HexToBytes());
+            var kp = new AvmKeyPair(alias,  privateKey.HexToBytes());
             var addressStr = kp.GetAddressString();
 
             Assert.AreEqual(pubKey,  kp.Pubk.BytesToHex());
@@ -43,7 +44,7 @@ namespace Tests
         public void ShouldGenerateKeysWithMnemonic()
         {
             var mnemonic = new Mnemonic("clever glove portion swing nerve bullet boil rose motion nose rocket tube color account enhance");
-            var kp = new AVMKeyPair(alias, mnemonic);
+            var kp = new AvmKeyPair(alias, mnemonic);
             var addressStr = kp.GetAddressString();
 
             Assert.AreEqual("0343087424849a4d3ca79a0eb89e14e00ff8a8c042e4f5f891f3d57c88737bac67",  kp.Pubk.BytesToHex());
@@ -54,7 +55,7 @@ namespace Tests
         public void ShouldGenerateKeysWithMnemonicAndPassword()
         {
             var mnemonic = new Mnemonic("clever glove portion swing nerve bullet boil rose motion nose rocket tube color account enhance");
-            var kp = new AVMKeyPair(alias, mnemonic, "P@aaw0rd");
+            var kp = new AvmKeyPair(alias, mnemonic, "P@aaw0rd");
             var addressStr = kp.GetAddressString();
 
             Assert.AreEqual("020ea542208ffa2bef2213bb1b3460e95d0134056bb211317c323a1d102cf856b5",  kp.Pubk.BytesToHex());
@@ -73,7 +74,7 @@ namespace Tests
             "be9fb13be75791778ea1081820f9d25d808d0714a92880a7144a0f9809961b43079576349b255399f5339550db7f5fec4b989e3364a5ffb0aca09e5ad72e92af00")]
         public void ShouldSign(string privateKey, string signature)
         {
-            var kp = new AVMKeyPair(alias,  privateKey.HexToBytes());
+            var kp = new AvmKeyPair(alias,  privateKey.HexToBytes());
             
             var hashed = NBitcoin.Crypto.Hashes.SHA256("09090909".HexToBytes());
             var signed = kp.Sign(hashed); 
@@ -86,7 +87,7 @@ namespace Tests
         [Test]
         public void ShouldSignAndVerifyWithNewKey()
         {
-            var kp = new AVMKeyPair(alias);
+            var kp = new AvmKeyPair(alias);
             
             var hashed = NBitcoin.Crypto.Hashes.SHA256("09090909".HexToBytes());
             var signed = kp.Sign(hashed); 

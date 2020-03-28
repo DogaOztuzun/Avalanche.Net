@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
-using System.Text;
+using Avalanche.Net.Models.Avm;
+using Avalanche.Net.Utilities;
 using NBitcoin;
 using NBitcoin.BouncyCastle.Math;
 using NBitcoin.Crypto;
-using NBitcoin.DataEncoders;
 
-namespace Avalanche.Net.Api.AVMAPI
+namespace Avalanche.Net.Api
 {
-    public class AVMKeyPair : KeyPair
+    public class AvmKeyPair : KeyPair
     {
         private Key _privateKey;
         public Key PrivateKey { 
@@ -34,21 +34,21 @@ namespace Avalanche.Net.Api.AVMAPI
 
         private ExtKey _masterKey;
 
-        public AVMKeyPair(string chainId)
+        public AvmKeyPair(string chainId)
         {
             SetChainID(chainId);
             _masterKey = new ExtKey();
             this.PrivateKey = _masterKey.PrivateKey;
         }
 
-        public AVMKeyPair(string chainId, byte[] privk) 
+        public AvmKeyPair(string chainId, byte[] privk) 
         {
             SetChainID(chainId);
             this.PrivateKey = new Key(privk);
         }
 
-        public AVMKeyPair(string chainId, Mnemonic mneumonic) : this(chainId, mneumonic, "") {}
-        public AVMKeyPair(string chainId, Mnemonic mneumonic, string passphrase)
+        public AvmKeyPair(string chainId, Mnemonic mneumonic) : this(chainId, mneumonic, "") {}
+        public AvmKeyPair(string chainId, Mnemonic mneumonic, string passphrase)
         {
             SetChainID(chainId);
 
@@ -155,28 +155,5 @@ namespace Avalanche.Net.Api.AVMAPI
             return buff.Concat(hashslice).ToArray();
         }
         # endregion
-    }
-
-    public static class StringExtensions
-    {
-        public static byte[] HexToBytes(this string hex)
-        {
-            return Enumerable.Range(0, hex.Length)
-                             .Where(x => x % 2 == 0)
-                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
-                             .ToArray();
-        }
-
-        public static string BytesToHex(this byte[] bytes)
-        {
-            StringBuilder hex = new StringBuilder(bytes.Length * 2);
-
-            foreach (byte b in bytes)
-            {
-                hex.AppendFormat("{0:x2}", b);
-            }
-
-            return hex.ToString();
-        }
     }
 }

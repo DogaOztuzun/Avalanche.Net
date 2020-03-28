@@ -1,6 +1,6 @@
 using System;
 
-namespace Avalanche.Net.Api.AVMAPI
+namespace Avalanche.Net.Utilities
 {
     /**
      * Base58 is a way to encode Bitcoin addresses (or arbitrary data) as alphanumeric strings.
