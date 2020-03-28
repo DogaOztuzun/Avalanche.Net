@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text;
-using Avalanche.Net.Models;
+using Avalanche.Net.Models.Api;
 
 namespace Avalanche.Net.Api
 {

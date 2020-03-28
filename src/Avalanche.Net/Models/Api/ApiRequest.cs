@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Avalanche.Net.Models
+namespace Avalanche.Net.Models.Api
 {
     public class ApiRequest
     {

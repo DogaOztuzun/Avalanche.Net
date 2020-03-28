@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Avalanche.Net.Models;
+using Avalanche.Net.Models.Api;
 
 namespace Avalanche.Net.Api
 {

@@ -1,4 +1,4 @@
-namespace Avalanche.Net.Models
+namespace Avalanche.Net.Models.Api
 {
     public class ExportKeyResponse
     {
