@@ -1,14 +1,9 @@
-using System;
-using System.Linq;
-using System.Text;
-using Avalanche.Net.Api;
 using Avalanche.Net.Models.Avm;
 using Avalanche.Net.Utilities;
 using NBitcoin;
-using NBitcoin.DataEncoders;
 using NUnit.Framework;
 
-namespace Tests
+namespace Avalanche.Net.Tests.Api.Avm
 {
     public class Keychain
     {
@@ -48,7 +43,7 @@ namespace Tests
             "ava14crnapsnw2rpx8d430yrnnw70ctkup6gfm6esr")]
         public void ShouldGenerateBech32Address(string privateKey, string address, string bech32Address)
         {
-            var kp = new AVMKeyPair(alias,  privateKey.HexToBytes());
+            var kp = new AvmKeyPair(alias,  privateKey.HexToBytes());
             
             var encoded = kp.GetBech32Address();
             Assert.AreEqual(bech32Address, encoded);

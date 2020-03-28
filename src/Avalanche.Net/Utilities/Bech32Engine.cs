@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Avalanche.Net.Api.AVMAPI
+namespace Avalanche.Net.Utilities
 {
     public static class Bech32Engine
     {

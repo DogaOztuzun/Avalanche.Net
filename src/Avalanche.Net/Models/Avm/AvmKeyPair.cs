@@ -40,10 +40,11 @@ namespace Avalanche.Net.Models.Avm
             this.PrivateKey = _masterKey.PrivateKey;
         }
 
-        public AvmKeyPair(string chainId, byte[] privk) 
+        public AvmKeyPair(string chainId, byte[] privk) : this(chainId, new Key(privk)) {}
+        public AvmKeyPair(string chainId, Key privk) 
         {
             SetChainID(chainId);
-            this.PrivateKey = new Key(privk);
+            this.PrivateKey = privk;
         }
 
         public AvmKeyPair(string chainId, Mnemonic mneumonic) : this(chainId, mneumonic, "") {}
@@ -66,7 +67,22 @@ namespace Avalanche.Net.Models.Avm
             var addr = addressFromPublicKey();
             return addressToString( base._chainId, addr);
         }
+        private string addressToString(string chainid, byte[] bytes){
+            return chainid + "-" + this.avaSerialize(bytes);
+        }
 
+        public string GetBech32Address() 
+        {
+            var addr = addressFromPublicKey();
+            return Bech32Engine.Encode("ava", addr);
+        }
+        
+        public string DecodeBech32Address(string bech32Address) 
+        {
+            Bech32Engine.Decode(bech32Address, out string hrp, out byte[] serializedAddress);
+            return this._chainId + "-" + this.avaSerialize(serializedAddress);
+        }
+        
         private byte[] addressFromPublicKey() 
         {
             if(this.PublicKey.ToBytes().Length == 65) 
@@ -133,14 +149,11 @@ namespace Avalanche.Net.Models.Avm
             Array.Copy(sig, 0, rsigPad, 0, 32);
             Array.Copy(sig, 32, ssigPad, 0, 32);
 
-            // Create and return custom Signature model which includes v
+            // TODO: Create and return custom Signature model which includes v
             return new ECDSASignature(new BigInteger(1, rsigPad), new BigInteger(1, ssigPad) );
         }
 
         # region utils/bintools
-        private string addressToString(string chainid, byte[] bytes){
-            return chainid + "-" + this.avaSerialize(bytes);
-        }
 
         private string avaSerialize(byte[] bytes) 
         {

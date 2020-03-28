@@ -1,14 +1,8 @@
-using System;
-using System.Linq;
-using System.Text;
-using Avalanche.Net.Api.AVMAPI;
-using Avalanche.Net.HDWallet;
-using NBitcoin;
-using NBitcoin.DataEncoders;
-using NUnit.Framework;
+using Avalanche.Net.Utilities;
 using NBitcoin.Crypto;
+using NUnit.Framework;
 
-namespace Tests
+namespace Avalanche.Net.Tests.Wallet
 {
     public class WalletTest
     {
@@ -23,7 +17,7 @@ namespace Tests
             var words = "clever glove portion swing nerve bullet boil rose motion nose rocket tube color account enhance";
             var passPhrase = "P@ssw0rd";
 
-            var wallet = new Wallet(words, passPhrase);
+            var wallet = new HDWallet.Wallet(words, passPhrase);
             var key0 = wallet.GetKeyPair(0);
             key0.SetChainID("X");
 
@@ -38,7 +32,7 @@ namespace Tests
             var words = "clever glove portion swing nerve bullet boil rose motion nose rocket tube color account enhance";
             var passPhrase = "P@ssw0rd";
 
-            var wallet = new Wallet(words, passPhrase);
+            var wallet = new HDWallet.Wallet(words, passPhrase);
             var kp = wallet.GetKeyPair(0);
             
             var hashed = Hashes.SHA256("09090909".HexToBytes());

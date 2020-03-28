@@ -1,5 +1,5 @@
-using Avalanche.Net.Api.AVMAPI;
 using NBitcoin;
+using Avalanche.Net.Models.Avm;
 
 namespace Avalanche.Net.HDWallet
 {
@@ -16,13 +16,13 @@ namespace Avalanche.Net.HDWallet
             _seed = mneumonic.DeriveSeed(passphrase);
         }
 
-        public AVMKeyPair GetKeyPair(int index)
+        public AvmKeyPair GetKeyPair(int index)
         {
             var masterKey = new ExtKey(_seed);
             var keyPath = new KeyPath(AVA_PATH.Replace("x", index.ToString()));
             ExtKey key = masterKey.Derive(keyPath);
 
-            return new AVMKeyPair("", key.PrivateKey);
+            return new AvmKeyPair("", key.PrivateKey);
         }
     }
 }
