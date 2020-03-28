@@ -13,6 +13,11 @@ namespace Avalanche.Net.Models.Avm
         protected byte[] numins;
         protected Input[] ins;
 
+        public Input[] GetIns()
+        {
+            return ins;
+        }
+
         public int FromBuffer(byte[] bytes, int offset = 0)
         {
             this.txtype = ByteUtil.Slice(bytes, offset, offset + 4);
