@@ -1,4 +1,4 @@
-namespace Avalanche.Net.Api.AVMAPI
+namespace Avalanche.Net.Models.Avm
 {
     public abstract class KeyPair
     {

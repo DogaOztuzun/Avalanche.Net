@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Avalanche.Net.Api.AVMAPI
+namespace Avalanche.Net.Utilities
 {
     public static class ByteUtil
     {
         public static readonly byte[] EMPTY_BYTE_ARRAY = new byte[0];
-        public static readonly byte[] ZERO_BYTE_ARRAY = {0};
+        public static readonly byte[] ZERO_BYTE_ARRAY = { 0 };
 
         /// <summary>
         ///     Creates a copy of bytes and appends b to the end of it
@@ -42,8 +42,8 @@ namespace Avalanche.Net.Api.AVMAPI
         public static IEnumerable<byte> MergeToEnum(params byte[][] arrays)
         {
             foreach (var a in arrays)
-            foreach (var b in a)
-                yield return b;
+                foreach (var b in a)
+                    yield return b;
         }
 
         /// <param name="arrays"> - arrays to merge </param>
@@ -58,8 +58,28 @@ namespace Avalanche.Net.Api.AVMAPI
             var length = Math.Min(a.Length, b.Length);
             var result = new byte[length];
             for (var i = 0; i < length; i++)
-                result[i] = (byte) (a[i] ^ b[i]);
+                result[i] = (byte)(a[i] ^ b[i]);
             return result;
+        }
+
+        public static long ConvertToInt64(byte[] buffer)
+        {
+            return BitConverter.ToInt64(buffer.Reverse().ToArray(), 0);
+        }
+
+        public static uint ConvertToInt32(byte[] buffer, int start = 0)
+        {
+            var val = BitConverter.ToUInt32(buffer, start);
+
+            return SwapBytes(val);
+        }
+
+        private static uint SwapBytes(UInt32 x)
+        {
+            // swap adjacent 16-bit blocks
+            x = (x >> 16) | (x << 16);
+            // swap adjacent 8-bit blocks
+            return ((x & 0xFF00FF00) >> 8) | ((x & 0x00FF00FF) << 8);
         }
     }
 }
