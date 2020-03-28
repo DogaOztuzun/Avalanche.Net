@@ -1,12 +1,11 @@
 using System;
 using System.Linq;
-using Avalanche.Net.Models.Avm;
 using Avalanche.Net.Utilities;
 using NBitcoin;
 using NBitcoin.BouncyCastle.Math;
 using NBitcoin.Crypto;
 
-namespace Avalanche.Net.Api
+namespace Avalanche.Net.Models.Avm
 {
     public class AvmKeyPair : KeyPair
     {

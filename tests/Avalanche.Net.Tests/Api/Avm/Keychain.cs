@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text;
 using Avalanche.Net.Api;
+using Avalanche.Net.Models.Avm;
 using Avalanche.Net.Utilities;
 using NBitcoin;
 using NBitcoin.DataEncoders;
