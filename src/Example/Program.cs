@@ -1,11 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.IO.Pipes;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Avalanche.Net.Models;
 using Avalanche.Net.Models.Api;
 
 namespace Example

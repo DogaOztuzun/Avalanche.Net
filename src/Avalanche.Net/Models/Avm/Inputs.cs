@@ -5,20 +5,30 @@ namespace Avalanche.Net.Models.Avm
 {
     public class Input
     {
-        protected byte[] txid;
-        protected byte[] txidx;
-        protected byte[] assetid;
-        protected byte[] inputid;
+        private byte[] _txId;
+        private byte[] _txIdx;
+        private byte[] _assetId;
+        private byte[] _inputId;
+
+        public string GetUtxoId()
+        {
+            return Base58.Encode(ByteUtil.Merge(_txId, _txIdx));
+        }
+        
+        public string GetAssetId()
+        {
+            return AvmKeyPair.AvaSerialize(_assetId);
+        }
 
         public int FromBuffer(byte[] bytes, int offset = 0)
         {
-            this.txid = ByteUtil.Slice(bytes, offset, offset + 32);
+            _txId = bytes.Slice(offset, offset + 32);
             offset += 32;
-            this.txidx = ByteUtil.Slice(bytes, offset, offset + 4);
+            _txIdx = bytes.Slice(offset, offset + 4);
             offset += 4;
-            this.assetid = ByteUtil.Slice(bytes, offset, offset + 32);
+            _assetId = bytes.Slice(offset, offset + 32);
             offset += 32;
-            this.inputid = ByteUtil.Slice(bytes, offset, offset + 4);
+            _inputId = bytes.Slice(offset, offset + 4);
             offset += 4;
             return offset;
         }
@@ -26,30 +36,31 @@ namespace Avalanche.Net.Models.Avm
 
     public class SecpInput : Input
     {
-        protected byte[] amount;
-        protected long amountValue;
-        protected byte[] numAddr;
-        protected SigIdx[] sigIdxs;
+        private byte[] _amount;
+        private byte[] _numAddr;
+        private SigIdx[] _sigIdxList;
+        
+        public long AmountValue { get; private set; }
 
         public new int FromBuffer(byte[] bytes, int offset = 0)
         {
             offset = base.FromBuffer(bytes, offset);
-            this.amount = ByteUtil.Slice(bytes, offset, offset + 8);
-            this.amountValue = ByteUtil.ConvertToInt64(this.amount);
+            _amount = bytes.Slice(offset, offset + 8);
+            AmountValue = _amount.ConvertToInt64();
             offset += 8;
-            this.numAddr = ByteUtil.Slice(bytes, offset, offset + 4);
+            _numAddr = bytes.Slice(offset, offset + 4);
             offset += 4;
-            var numaddr = ByteUtil.ConvertToInt32(this.numAddr);
+            var addressCount = _numAddr.ConvertToInt32();
             var sigIdxList = new List<SigIdx>();
-            for (var i = 0; i < numaddr; i++)
+            for (var i = 0; i < addressCount; i++)
             {
-                var sigidx = new SigIdx();
-                var sigbuff = ByteUtil.Slice(bytes, offset, offset + 4);
-                sigidx.FromBuffer(sigbuff);
+                var sigIdx = new SigIdx();
+                var sigBuff = bytes.Slice(offset, offset + 4);
+                sigIdx.FromBuffer(sigBuff);
                 offset += 4;
-                sigIdxList.Add(sigidx);
+                sigIdxList.Add(sigIdx);
             }
-            this.sigIdxs = sigIdxList.ToArray();
+            _sigIdxList = sigIdxList.ToArray();
 
             return offset;
         }
@@ -61,7 +72,7 @@ namespace Avalanche.Net.Models.Avm
 
         public SigIdx()
         {
-            this.bsize = 4;
+            ByteSize = 4;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NBitcoin.Crypto;
 
 namespace Avalanche.Net.Utilities
 {
@@ -62,12 +63,12 @@ namespace Avalanche.Net.Utilities
             return result;
         }
 
-        public static long ConvertToInt64(byte[] buffer)
+        public static long ConvertToInt64(this byte[] buffer)
         {
             return BitConverter.ToInt64(buffer.Reverse().ToArray(), 0);
         }
 
-        public static uint ConvertToInt32(byte[] buffer, int start = 0)
+        public static uint ConvertToInt32(this byte[] buffer, int start = 0)
         {
             var val = BitConverter.ToUInt32(buffer, start);
 

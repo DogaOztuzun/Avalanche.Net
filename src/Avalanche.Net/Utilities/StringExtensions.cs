@@ -16,9 +16,9 @@ namespace Avalanche.Net.Utilities
 
         public static string BytesToHex(this byte[] bytes)
         {
-            StringBuilder hex = new StringBuilder(bytes.Length * 2);
+            var hex = new StringBuilder(bytes.Length * 2);
 
-            foreach (byte b in bytes)
+            foreach (var b in bytes)
             {
                 hex.AppendFormat("{0:x2}", b);
             }

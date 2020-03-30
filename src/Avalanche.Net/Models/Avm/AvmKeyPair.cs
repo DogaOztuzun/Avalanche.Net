@@ -67,8 +67,9 @@ namespace Avalanche.Net.Models.Avm
             var addr = addressFromPublicKey();
             return addressToString( base._chainId, addr);
         }
+        
         private string addressToString(string chainid, byte[] bytes){
-            return chainid + "-" + this.avaSerialize(bytes);
+            return chainid + "-" + AvaSerialize(bytes);
         }
 
         public string GetBech32Address() 
@@ -80,7 +81,7 @@ namespace Avalanche.Net.Models.Avm
         public string DecodeBech32Address(string bech32Address) 
         {
             Bech32Engine.Decode(bech32Address, out string hrp, out byte[] serializedAddress);
-            return this._chainId + "-" + this.avaSerialize(serializedAddress);
+            return this._chainId + "-" + AvaSerialize(serializedAddress);
         }
         
         private byte[] addressFromPublicKey() 
@@ -155,13 +156,13 @@ namespace Avalanche.Net.Models.Avm
 
         # region utils/bintools
 
-        private string avaSerialize(byte[] bytes) 
+        public static string AvaSerialize(byte[] bytes) 
         {
-            bytes = addChecksum(bytes);
+            bytes = AddChecksum(bytes);
             return Base58.Encode(bytes);
         }
 
-        private byte[] addChecksum(byte[] buff)
+        private static byte[] AddChecksum(byte[] buff)
         {
             var hashslice =  NBitcoin.Crypto.Hashes.SHA256(buff).Skip(28);
             return buff.Concat(hashslice).ToArray();

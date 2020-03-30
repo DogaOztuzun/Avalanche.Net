@@ -1,17 +1,19 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalanche.Net.Utilities;
 
 namespace Avalanche.Net.Models.Avm
 {
     public class Output
     {
-        protected byte[] outputid;
-        protected uint outputidnum;
+        private byte[] _outputId;
+        private uint _outputIdCount;
 
         public int FromBuffer(byte[] buffer, int offset)
         {
-            this.outputid = ByteUtil.Slice(buffer, offset, offset + 4);
-            this.outputidnum = ByteUtil.ConvertToInt32(this.outputid);
+            _outputId = buffer.Slice(offset, offset + 4);
+            _outputIdCount = _outputId.ConvertToInt32();
 
             return offset + 4;
         }
@@ -19,40 +21,45 @@ namespace Avalanche.Net.Models.Avm
 
     public class SecpOutBase : Output
     {
-        protected byte[] locktime;
-        protected byte[] threshold;
-        protected byte[] numaddrs;
-        protected Address[] addresses;
-        protected byte[] amount;
-        protected long amountValue;
+        private byte[] _lockTime;
+        private byte[] _threshold;
+        private byte[] _addressCount;
+        private Address[] _addressList;
+        private byte[] _amount;
+        public long AmountValue { get; private set; }
 
-        public new int FromBuffer(byte[] buffer, int offset = 0)
+        public List<string> GetAddresses()
+        {
+            return _addressList.Select(x => AvmKeyPair.AvaSerialize(x.ToBuffer())).ToList();
+        }
+
+        protected new int FromBuffer(byte[] buffer, int offset = 0)
         {
             offset = base.FromBuffer(buffer, offset);
 
-            this.amount = ByteUtil.Slice(buffer, offset, offset + 8);
-            this.amountValue = ByteUtil.ConvertToInt64(this.amount);
+            _amount = buffer.Slice(offset, offset + 8);
+            AmountValue = _amount.ConvertToInt64();
             offset += 8;
-            this.locktime = ByteUtil.Slice(buffer, offset, offset + 8);
+            _lockTime = buffer.Slice(offset, offset + 8);
             offset += 8;
-            this.threshold = ByteUtil.Slice(buffer, offset, offset + 4);
+            _threshold = buffer.Slice(offset, offset + 4);
             offset += 4;
-            this.numaddrs = ByteUtil.Slice(buffer, offset, offset + 4);
+            _addressCount = buffer.Slice(offset, offset + 4);
             offset += 4;
 
-            var numaddrs = ByteUtil.ConvertToInt32(this.numaddrs);
+            var addressCount = _addressCount.ConvertToInt32();
             var addressList = new List<Address>();
-            for (var i = 0; i < numaddrs; i++)
+            for (var i = 0; i < addressCount; i++)
             {
                 var addr = new Address();
-                var offsetEnd = offset + addr.getSize();
-                var copied = ByteUtil.Slice(buffer, offset, offsetEnd);
+                var offsetEnd = offset + addr.GetSize();
+                var copied = buffer.Slice(offset, offsetEnd);
                 addr.FromBuffer(copied);
                 addressList.Add(addr);
                 offset = offsetEnd;
             }
 
-            this.addresses = addressList.ToArray();
+            _addressList = addressList.ToArray();
 
             return offset;
         }
@@ -60,16 +67,21 @@ namespace Avalanche.Net.Models.Avm
 
     public class SecpOutput : SecpOutBase
     {
-        protected byte[] assetid;
+        private byte[] _assetId;
 
-        public SecpOutput(byte[] assetid)
+        public string GetAssetId()
         {
-            this.assetid = assetid;
+            return AvmKeyPair.AvaSerialize(_assetId);
+        }
+
+        public SecpOutput(byte[] assetId)
+        {
+            _assetId = assetId;
         }
 
         public new int FromBuffer(byte[] buffer, int offset = 0)
         {
-            this.assetid = ByteUtil.Slice(buffer, offset, offset + 32);
+            _assetId = buffer.Slice(offset, offset + 32);
             offset += 32;
             offset = base.FromBuffer(buffer, offset);
             return offset;
@@ -78,32 +90,37 @@ namespace Avalanche.Net.Models.Avm
 
     public class Address : NBytes
     {
+        public byte[] ToBuffer()
+        {
+            return Bytes;
+        }
+        
         public Address()
         {
-            this.bsize = 20;
+            ByteSize = 20;
         }
     }
 
     public abstract class NBytes
     {
-        protected byte[] bytes;
-        protected int bsize;
+        protected byte[] Bytes;
+        protected int ByteSize;
 
-        public int getSize()
+        public int GetSize()
         {
-            return bsize;
+            return ByteSize;
         }
 
         public int FromBuffer(byte[] buff)
         {
-            if (buff.Length != this.bsize)
+            if (buff.Length != ByteSize)
             {
-                throw new System.Exception("Buffer length must be exactly " + this.bsize + " bytes.");
+                throw new Exception("Buffer length must be exactly " + ByteSize + " bytes.");
             }
 
-            this.bytes = buff;
+            Bytes = buff;
 
-            return this.bsize;
+            return ByteSize;
         }
     }
 }

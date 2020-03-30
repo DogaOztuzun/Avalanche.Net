@@ -1,7 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalanche.Net.Models.Avm;
+using NBitcoin.Crypto;
 using nng;
 
 namespace Avalanche.Net.Streams
@@ -35,8 +38,33 @@ namespace Avalanche.Net.Streams
 
         private static void BytesToTx(byte[] buffer)
         {
-            var tx = new TxUnsigned();
+            var tx = new Tx();
             tx.FromBuffer(buffer);
+            
+            Console.WriteLine(tx.TxId);
+
+            Console.WriteLine(tx.TxUnsigned.GetNetworkId());
+            Console.WriteLine(tx.TxUnsigned.GetBlockChainId());
+            
+            Console.WriteLine("Inputs");
+            foreach (var input in tx.TxUnsigned.GetInputs())
+            {
+                if (input is SecpInput secpInput)
+                {
+                    Console.WriteLine("AssetId: "+secpInput.GetAssetId());
+                    Console.WriteLine("Amount: "+secpInput.AmountValue);    
+                }
+            }
+            
+            Console.WriteLine("Outputs");
+            foreach (var output in tx.TxUnsigned.GetOutputs())
+            {
+                if (!(output is SecpOutput secp)) continue;
+                
+                Console.WriteLine("AssetId: "+secp.GetAssetId());
+                Console.WriteLine("Amount: "+secp.AmountValue);
+                Console.WriteLine(secp.GetAddresses().First());
+            }
         }
     }
 }
