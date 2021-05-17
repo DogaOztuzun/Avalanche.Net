@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using Avalanche.Net.Utilities;
+using HDWallet.Avalanche;
+using HDWallet.Core;
 using NBitcoin;
 using NBitcoin.BouncyCastle.Math;
 using NBitcoin.Crypto;
@@ -9,6 +11,8 @@ namespace Avalanche.Net.Models.Avm
 {
     public class AvmKeyPair : KeyPair
     {
+        public AvalancheWallet Wallet { get; }
+
         private Key _privateKey;
         public Key PrivateKey { 
             get {
@@ -31,77 +35,36 @@ namespace Avalanche.Net.Models.Avm
             }
         }
 
-        private ExtKey _masterKey;
 
-        public AvmKeyPair(string chainId)
+        public AvmKeyPair(string chainId, string privk) 
         {
-            SetChainID(chainId);
-            _masterKey = new ExtKey();
-            this.PrivateKey = _masterKey.PrivateKey;
-        }
+            this.Wallet = new AvalancheWallet(privk);
 
-        public AvmKeyPair(string chainId, byte[] privk) : this(chainId, new Key(privk)) {}
-        public AvmKeyPair(string chainId, Key privk) 
-        {
             SetChainID(chainId);
-            this.PrivateKey = privk;
+            this.PrivateKey = this.Wallet.PrivateKey;
         }
 
         public AvmKeyPair(string chainId, Mnemonic mneumonic) : this(chainId, mneumonic, "") {}
-        public AvmKeyPair(string chainId, Mnemonic mneumonic, string passphrase)
+        public AvmKeyPair(string chainId, Mnemonic mneumonic, string passphrase): this(chainId, string.Join(" ", mneumonic.Words), passphrase) {}
+        public AvmKeyPair(string chainId, string words, string passphrase)
         {
             SetChainID(chainId);
 
-            byte[] seed = mneumonic.DeriveSeed(passphrase);
-            _masterKey = new ExtKey(seed);
-            this.PrivateKey = _masterKey.PrivateKey;
-        }
-
-        public byte[] GetAddress() 
-        {
-            return addressFromPublicKey();
+            IHDWallet<AvalancheWallet> hdWallet = new AvalancheHDWallet(words, passphrase);
+            this.Wallet = hdWallet.GetMasterWallet();
+            
+            this.PrivateKey = this.Wallet.PrivateKey;
         }
 
         public string GetAddressString() 
         {
-            var addr = addressFromPublicKey();
-            return addressToString( base._chainId, addr);
+            return this.Wallet.Address;
         }
         
         private string addressToString(string chainid, byte[] bytes){
             return chainid + "-" + AvaSerialize(bytes);
         }
 
-        public string GetBech32Address() 
-        {
-            var addr = addressFromPublicKey();
-            return Bech32Engine.Encode("ava", addr);
-        }
-        
-        public string DecodeBech32Address(string bech32Address) 
-        {
-            Bech32Engine.Decode(bech32Address, out string hrp, out byte[] serializedAddress);
-            return this._chainId + "-" + AvaSerialize(serializedAddress);
-        }
-        
-        private byte[] addressFromPublicKey() 
-        {
-            if(this.PublicKey.ToBytes().Length == 65) 
-            {
-                throw new NotImplementedException();
-            }
-
-            if(this.PublicKey.ToBytes().Length == 33) 
-            {
-                var pubBytes = PublicKey.ToBytes();
-                var sha256 =  NBitcoin.Crypto.Hashes.SHA256(pubBytes);
-                var ripesha = NBitcoin.Crypto.Hashes.RIPEMD160(sha256, sha256.Length);
-                return ripesha;
-            }
-
-            throw new NotSupportedException();
-        }
-        
         public byte[] Sign(byte[] msg) 
         { 
             // Returns signature as v + r + s
@@ -150,8 +113,11 @@ namespace Avalanche.Net.Models.Avm
             Array.Copy(sig, 0, rsigPad, 0, 32);
             Array.Copy(sig, 32, ssigPad, 0, 32);
 
+            throw new NotImplementedException();
+
             // TODO: Create and return custom Signature model which includes v
-            return new ECDSASignature(new BigInteger(1, rsigPad), new BigInteger(1, ssigPad) );
+            // TODO: Need to find a way with latest version of NBitcoin
+            // return new ECDSASignature(new BigInteger(1, rsigPad), new BigInteger(1, ssigPad) );
         }
 
         # region utils/bintools

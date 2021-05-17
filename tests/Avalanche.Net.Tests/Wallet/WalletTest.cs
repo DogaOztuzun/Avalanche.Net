@@ -1,4 +1,7 @@
+using Avalanche.Net.Models.Avm;
 using Avalanche.Net.Utilities;
+using HDWallet.Avalanche;
+using HDWallet.Core;
 using NBitcoin.Crypto;
 using NUnit.Framework;
 
@@ -6,38 +9,16 @@ namespace Avalanche.Net.Tests.Wallet
 {
     public class WalletTest
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void ShouldCreateHDWallet()
         {
             var words = "clever glove portion swing nerve bullet boil rose motion nose rocket tube color account enhance";
             var passPhrase = "P@ssw0rd";
 
-            var wallet = new HDWallet.Wallet(words, passPhrase);
-            var key0 = wallet.GetKeyPair(0);
-            key0.SetChainID("X");
+            IHDWallet<AvalancheWallet> hdWallet = new AvalancheHDWallet(words, passPhrase);
+            var key0 = hdWallet.GetAccount(0).GetExternalWallet(0);
 
-            // TODO: Addresses will change when hdPath updated from BTC (0) to AVA (?)
-            Assert.AreEqual("X-HuBC5rHXPnKzAt1JGBUpaKbGdLa12pB9z", key0.GetAddressString());
-            Assert.AreEqual("ava1h9szvnarh5cw85unz8un5p3hdrctt73gfwuluq", key0.GetBech32Address());
-        }
-
-        [Test]
-        public void ShouldSignAndVerifyWithNewKey()
-        {
-            var words = "clever glove portion swing nerve bullet boil rose motion nose rocket tube color account enhance";
-            var passPhrase = "P@ssw0rd";
-
-            var wallet = new HDWallet.Wallet(words, passPhrase);
-            var kp = wallet.GetKeyPair(0);
-            
-            var hashed = Hashes.SHA256("09090909".HexToBytes());
-            var signed = kp.Sign(hashed); 
-            Assert.IsTrue(kp.Verify(hashed, signed));
+            Assert.AreEqual("X-avax1zcsk0ptxe72suv3w6pr8r7f7kvt8r48t5f3zdt", key0.Address);
         }
     }
 }
